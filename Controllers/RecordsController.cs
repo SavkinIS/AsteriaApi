@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AsteriaApi.ContextFolder;
 using AsteriaApi.Models;
 using AsteriaApi.DataFolder;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AsteriaApi.Controllers
 {
@@ -23,13 +24,14 @@ namespace AsteriaApi.Controllers
 
             _context = context;
         }
-        
+
 
         // GET: api/Records
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Record>>> GetRecords()
         {
-            return await Task.Run(() =>_context.GetRecords());
+            return await Task.Run(() => _context.GetRecords());
         }
 
         // GET: api/Records/5
@@ -45,26 +47,72 @@ namespace AsteriaApi.Controllers
 
             return record;
         }
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        [Route("GetRecords/{date}/SpecID/{specID}/Time/{time}")]
+        public async Task<ActionResult<IEnumerable<Record>>> GetRecord(string date, int specID, string time)
+        {
+            var record = await Task.Run(() => _context.GetRecords(date, specID, time));
+
+            if (record == null)
+            {
+                return NotFound();
+            }
+
+            return record;
+        }
+
+        [HttpGet]
+        [Route("GetRecords/{date}/SpecID/{specID}")]
+        public async Task<ActionResult<IEnumerable<RecordsDTO>>> GetRecord(string date, int specID)
+        {
+            var record = await Task.Run(() => _context.GetRecords(date, specID));
+
+            if (record == null)
+            {
+                return NotFound();
+            }
+
+            return record;
+        }
+
+
+        [HttpGet]
+        [Route("GetRecords/{date}")]
+        public async Task<ActionResult<IEnumerable<RecordsDTO>>> GetRecord(string date)
+        {
+            var record = await Task.Run(() => _context.GetRecords(date));
+
+            if (record == null)
+            {
+                return NotFound();
+            }
+
+            return record;
+        }
 
         // PUT: api/Records/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRecord(long id, Record record)
+        public async Task<IActionResult> PutRecord( Record record)
         {
-            if (id != record.Id)
+            try
             {
-                return BadRequest();
+                await Task.Run(() => _context.PutRecord(record, record.Id));
             }
-
-            await Task.Run(() => _context.PutRecord(record, id));
+            catch
+            {
+                BadRequest();
+            }
 
             return NoContent();
         }
 
         // POST: api/Records
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<Record>> PostRecord(Record record)
         {
-            _context.AddRecord(record);
+           await Task.Run(()=> _context.AddRecord(record));
             
 
             return CreatedAtAction("GetRecord", new { id = record.Id }, record);

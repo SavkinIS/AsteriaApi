@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace AsteriaApi.DataFolder
@@ -73,7 +74,7 @@ namespace AsteriaApi.DataFolder
                     throw;
                 }
             }
-            catch(Exception e)
+            catch
             {
                 return "Cant Change Clients ID";
             }
@@ -126,6 +127,109 @@ namespace AsteriaApi.DataFolder
             return rec;
         }
 
+        public ActionResult<IEnumerable<RecordsDTO>> GetRecords(string date)
+        {
+            int year, month, day;
+            ConvertTodate(date, out year, out month, out day);
+            DateTime dt = new DateTime(year, month, day);
+
+            var rec = context.Records.Where(d => (d.Date.ToShortDateString() == dt.ToShortDateString())).ToList();
+
+
+            var clients = context.Clients.ToList();
+
+
+
+            List<RecordsDTO> recod = new List<RecordsDTO>();
+            ToRecordsDTO(rec, clients, recod);
+
+            return recod;
+        }
+
+        public ActionResult<IEnumerable<RecordsDTO>> GetRecords(string date, int specId)
+        {
+            int year, month, day;
+            ConvertTodate(date, out year, out month, out day);
+            DateTime dt = new DateTime(year, month, day);
+
+            var rec = context.Records.Where(s => (s.SpecId == specId))//.ToList();
+                                       .Where(d => (d.Date.ToShortDateString() == dt.ToShortDateString())).ToList();
+
+
+            var clients = context.Clients.ToList();
+
+
+          
+            List<RecordsDTO> recod = new List<RecordsDTO>();
+            ToRecordsDTO(rec, clients, recod);
+
+            return recod;
+        }
+
+        /// <summary>
+        /// Переопределяем содерщимое записей, для лучшей визуализации
+        /// </summary>
+        /// <param name="rec">Результат запроса</param>
+        /// <param name="clients">список клиетнов</param>
+        /// <param name="recod">список для переопределения</param>
+        private void ToRecordsDTO(List<Record> rec, List<Client> clients, List<RecordsDTO> recod)
+        {
+            //Переопределяем содерщимое записей, для лучшей визуализации
+            foreach (var r in rec)
+            {
+                recod.Add(
+                    new RecordsDTO
+                    {
+                        Id = r.Id,
+                        ClientName = clients.Where(i => (i.Id == r.ClientId)).FirstOrDefault().Name,
+                        Clientid = r.ClientId,
+                        SpecId = r.SpecId,
+                        SpecName = context.Specialists.Where(i => (i.Id == r.SpecId)).FirstOrDefault().Name,
+                        Price = r.Price,
+                        TypeWork = r.TypeWork,
+                        Date = r.Date,
+                        Time = r.Time
+                    }) ;
+            }
+        }
+
+        public ActionResult<IEnumerable<Record>> GetRecords(string date, int specId, string time)
+        {
+            int year, month, day;
+            ConvertTodate(date, out year, out month, out day);
+            int hour, minutes;
+            time = ConvertToTime(time, out hour, out minutes);
+            DateTime dt = new DateTime(year, month, day, hour, minutes, 0);
+
+            var rec = context.Records.Where(s => (s.SpecId == specId))//.ToList();
+                                       .Where(d => (d.Date.ToShortDateString() == dt.ToShortDateString())).ToList();
+
+
+            return rec;
+        }
+
+        private static string ConvertToTime(string time, out int hour, out int minutes)
+        {
+            if (time.StartsWith('9') || time.StartsWith('0')) time = "0" + time;
+            hour = Convert.ToInt32(time.Substring(0, 2));
+            minutes = Convert.ToInt32(time.Substring(3, 2));
+            return time;
+        }
+
+        /// <summary>
+        /// Переводит строку в дату
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="day"></param>
+        private static void ConvertTodate(string date, out int year, out int month, out int day)
+        {
+            year = Convert.ToInt32(date.Substring(6, 4));
+            month = Convert.ToInt32(date.Substring(3, 2));
+            day = Convert.ToInt32(date.Substring(0, 2));
+        }
+
         public string PutRecord(Record newRecord, long id)
         {
             try
@@ -139,6 +243,7 @@ namespace AsteriaApi.DataFolder
                     oldRecord.Time = newRecord.Time;
                     oldRecord.Date = newRecord.Date;
                     oldRecord.Price = newRecord.Price;
+                    oldRecord.TypeWork = newRecord.TypeWork;
                     context.SaveChanges();
                     return "ok";
                 }
@@ -274,134 +379,7 @@ namespace AsteriaApi.DataFolder
         }
         #endregion
 
-        #region TimeSheets
-        public ActionResult<IEnumerable<TimeSheets>> GetTimeSheets()
-        {
-            try
-            {
-                var dN = DateTime.Now;
-                var dnd = dN.ToShortDateString();
-                var timSheet = context.Sheetcs.Where(d => (d.Date.ToShortDateString() == dnd)).ToList();
-               
-                return timSheet;
-            }
-            catch
-            {
-                return new List<TimeSheets>();
-            }
-            /**/
-        }
-
-        public ActionResult<TimeSheets> GetTimeSheets(int id)
-        {
-            var res = context.Sheetcs.Find(id);
-         
-            return res;
-        }
-
-        public ActionResult<IEnumerable<TimeSheets>> GetTimeSheets( string date, int specID)
-        {
-            return context.Sheetcs.Where(d => (d.Date.ToShortDateString() == date.Replace("-",".")))
-                                   .Where(s =>(s.SpecID ==specID)).ToList();
-        }
-        public void AddTimeSheets(TimeSheets timeSheets)
-        {
-            context.Sheetcs.Add(timeSheets);
-            context.SaveChanges();
-        }
-
-        public string PutTimeSheets(TimeSheets newSheet, long id)
-        {
-            try
-            {
-                var oldSheet = context.Sheetcs.Where(cl => (cl.Id == id)).FirstOrDefault();
-                if (oldSheet.Id == id)
-                {
-                    oldSheet.SpecID = newSheet.Id;
-                    oldSheet.T9m00 = newSheet.T9m00;
-                    oldSheet.T9m30 = newSheet.T9m30;
-
-                    oldSheet.T10m00 = newSheet.T10m00;
-                    oldSheet.T10m30 = newSheet.T10m30;
-
-                    oldSheet.T11m00 = newSheet.T11m00;
-                    oldSheet.T11m30 = newSheet.T11m30;
-
-                    oldSheet.T12m00 = newSheet.T12m00;
-                    oldSheet.T12m30 = newSheet.T12m30;
-
-                    oldSheet.T13m00 = newSheet.T13m00;
-                    oldSheet.T13m30 = newSheet.T13m30;
-                    
-                    oldSheet.T14m00 = newSheet.T14m00;
-                    oldSheet.T14m30 = newSheet.T14m30;
-
-                    oldSheet.T15m00 = newSheet.T15m00;
-                    oldSheet.T15m30 = newSheet.T15m30;
-
-                    oldSheet.T16m00 = newSheet.T16m00;
-                    oldSheet.T16m30 = newSheet.T16m30;
-
-                    oldSheet.T17m00 = newSheet.T17m00;
-                    oldSheet.T17m30 = newSheet.T17m30;
-
-                    oldSheet.T18m00 = newSheet.T18m00;
-                    oldSheet.T18m30 = newSheet.T18m30; 
-
-                    oldSheet.T19m00 = newSheet.T19m00;
-                    oldSheet.T19m30 = newSheet.T19m30;
-
-
-                    context.SaveChanges();
-                    return "ok";
-                }
-                else
-                {
-                    return "NotFound";
-                }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SheetExists(newSheet.Id))
-                {
-                    return "NotFound";
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            catch (Exception e)
-            {
-                return "Cant Change Record ID";
-            }
-        }
-
-        public TimeSheets DelSheetcs(int id)
-        {
-            var sheet = context.Sheetcs.Find(id);
-            if (sheet == null)
-            {
-                return sheet;
-            }
-            try
-            {
-                context.Sheetcs.Remove(sheet);
-                context.SaveChanges();
-                return sheet;
-            }
-            catch (Exception e)
-            {
-                //добавить LOG
-                return sheet;
-            }
-
-        }
-        private bool SheetExists(int id)
-        {
-            return context.Sheetcs.Any(e => e.Id == id);
-        }
-        #endregion
+       
 
 
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AsteriaApi.DataFolder;
 using AsteriaApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,7 @@ namespace AsteriaApi.Controllers
 
         // GET: api/Specialists
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Specialist>>> GetSpecialists()
         {
             return await Task.Run(() =>_context.GetSpecialists());
@@ -58,9 +60,10 @@ namespace AsteriaApi.Controllers
 
         // POST: api/Records
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<Record>> PostSpecialist(Specialist spec)
         {
-            _context.AddSpecialist(spec);
+           await Task.Run(()=> _context.AddSpecialist(spec));
             
 
             return CreatedAtAction("GetSpecialist", new { id = spec.Id }, spec);

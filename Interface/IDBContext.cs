@@ -64,9 +64,31 @@ namespace AsteriaApi.Interface
         /// </summary>
         /// <param name="record"></param>
         void AddRecord(Record record);
-        
 
-       
+        /// <summary>
+        /// Возвращает  записи по дате и специалисту
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="specId"></param>
+        /// <returns></returns>
+        ActionResult<IEnumerable<RecordsDTO>> GetRecords(string data, int specId);
+
+        /// <summary>
+        /// Возвращает  записи по дате
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        ActionResult<IEnumerable<RecordsDTO>> GetRecords(string date);
+
+        /// <summary>
+        /// Возвращает  записи по дате
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="specId"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        ActionResult<IEnumerable<Record>> GetRecords(string data, int specId, string time);
+
         /// <summary>
         /// Изменение Записи
         /// </summary>
@@ -120,47 +142,6 @@ namespace AsteriaApi.Interface
 
         #endregion
 
-        #region TimeSheets  
-
-        /// <summary>
-        /// Возвращает все записи по определённого работника в определённую дату
-        /// </summary>
-        /// <param name="SpecID"> id Работника</param>
-        /// <param name="Date"> Дата записи</param>
-        /// <returns></returns>
-        ActionResult<IEnumerable<TimeSheets>> GetTimeSheets();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="date">Дата записи в формате дд-мм-гггг</param>
-        /// <param name="specID">ID специалиста</param>
-        /// <returns></returns>
-        ActionResult<IEnumerable<TimeSheets>> GetTimeSheets(string date, int specID);
-
-        /// <summary>
-        /// Возвращает запись по 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        ActionResult<TimeSheets> GetTimeSheets(int id );       
-        
-        /// <summary>
-        /// добавить график
-        /// </summary>
-        /// <param name="timeSheets"></param>
-        void AddTimeSheets(TimeSheets timeSheets);
-
-        /// <summary>
-        /// Изменение расписания
-        /// </summary>
-        /// <param name="newSheet"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        string PutTimeSheets(TimeSheets newSheet, long id);
-
-        TimeSheets DelSheetcs(int id);
-
-        #endregion
+    
     }
 }

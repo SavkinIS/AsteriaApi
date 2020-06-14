@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsteriaApi", "AsteriaApi.csproj", "{12E39DB6-72DB-4783-9F59-F8A6D000AAC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsteriaApiTests", "..\AsteriaApiTests\AsteriaApiTests.csproj", "{E1A28D88-BBEB-4730-93F8-A4BBCC01F76A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{12E39DB6-72DB-4783-9F59-F8A6D000AAC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12E39DB6-72DB-4783-9F59-F8A6D000AAC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12E39DB6-72DB-4783-9F59-F8A6D000AAC4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1A28D88-BBEB-4730-93F8-A4BBCC01F76A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1A28D88-BBEB-4730-93F8-A4BBCC01F76A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1A28D88-BBEB-4730-93F8-A4BBCC01F76A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1A28D88-BBEB-4730-93F8-A4BBCC01F76A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

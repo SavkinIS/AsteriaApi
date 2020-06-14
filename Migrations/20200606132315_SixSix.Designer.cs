@@ -4,14 +4,16 @@ using AsteriaApi.ContextFolder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AsteriaApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200606132315_SixSix")]
+    partial class SixSix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,6 +133,65 @@ namespace AsteriaApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialists");
+                });
+
+            modelBuilder.Entity("AsteriaApi.Models.TimeSheets", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("SpecID");
+
+                    b.Property<int?>("T10m00");
+
+                    b.Property<int?>("T10m30");
+
+                    b.Property<int?>("T11m00");
+
+                    b.Property<int?>("T11m30");
+
+                    b.Property<int?>("T12m00");
+
+                    b.Property<int?>("T12m30");
+
+                    b.Property<int?>("T13m00");
+
+                    b.Property<int?>("T13m30");
+
+                    b.Property<int?>("T14m00");
+
+                    b.Property<int?>("T14m30");
+
+                    b.Property<int?>("T15m00");
+
+                    b.Property<int?>("T15m30");
+
+                    b.Property<int?>("T16m00");
+
+                    b.Property<int?>("T16m30");
+
+                    b.Property<int?>("T17m00");
+
+                    b.Property<int?>("T17m30");
+
+                    b.Property<int?>("T18m00");
+
+                    b.Property<int?>("T18m30");
+
+                    b.Property<int?>("T19m00");
+
+                    b.Property<int?>("T19m30");
+
+                    b.Property<int?>("T9m00");
+
+                    b.Property<int?>("T9m30");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sheetcs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -8,11 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using AsteriaApi.ContextFolder;
 using AsteriaApi.Models;
 using AsteriaApi.DataFolder;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AsteriaApi.Controllers
 {
+
+    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ClientsController : ControllerBase
     {
         private readonly Data _context;
@@ -26,6 +30,7 @@ namespace AsteriaApi.Controllers
 
         // GET: api/Clients
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Client>>> GetAClients()
         {
             var x = Task.Run (()=>_context.GetClients());
@@ -35,6 +40,7 @@ namespace AsteriaApi.Controllers
 
         // GET: api/Clients/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
             var client = Task.Run(() => _context.GetClients(id));
@@ -46,6 +52,7 @@ namespace AsteriaApi.Controllers
 
         // PUT: api/Clients/5
         [HttpPut("{id}")]
+        
         public async Task<IActionResult> PutClient( Client client, long id)
         {
             var res = await Task.Run(() => _context.PutClient(client, id));
@@ -59,6 +66,7 @@ namespace AsteriaApi.Controllers
 
         // POST: api/Clients
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<Client>> PostClient(Client client)
         {
 

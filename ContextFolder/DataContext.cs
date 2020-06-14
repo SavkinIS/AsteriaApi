@@ -1,4 +1,6 @@
-﻿using AsteriaApi.Models;
+﻿using AsteriaApi.AuthUser;
+using AsteriaApi.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace AsteriaApi.ContextFolder
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User>
     {
         public DbSet<Client> Clients { get; set; }
         public DbSet<Record> Records { get; set; }
         public DbSet<Specialist> Specialists { get; set; }
-        public DbSet<TimeSheets> Sheetcs { get; set; }
-
         
 
-        public DataContext()
-        {
-        }
 
-         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DataContext() { }
+
+
+        public DataContext(DbContextOptions options) : base(options) { }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
          {
              ///Изменить строку подключения
              optionsBuilder.UseSqlServer(
                   @"Server=(LocalDB)\MSSQLLocalDB;
-                     DataBase=Asteria_DB.mdf;
+                     DataBase=Asteria2_DB.mdf;
                     Trusted_Connection=True;"
                  );
          }
